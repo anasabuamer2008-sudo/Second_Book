@@ -6,6 +6,7 @@ import { useCartStore, Order } from "@/store/useCartStore";
 import { getDictionary } from "@/dictionaries";
 import { DELIVERY_FEE } from "@/lib/books";
 import Toast from "@/components/ui/Toast";
+import DirectMailOrder from "@/components/ui/DirectMailOrder";
 import Link from "next/link";
 
 export default function CheckoutPage() {
@@ -20,7 +21,7 @@ export default function CheckoutPage() {
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [sending, setSending] = useState(false);
-  const [lastOrder, setLastOrder] = useState<{ id: string; total: number } | null>(null);
+  const [lastOrder, setLastOrder] = useState<Order | null>(null);
   const [form, setForm] = useState<{
     fullName: string;
     email: string;
@@ -74,6 +75,20 @@ export default function CheckoutPage() {
           <p className="text-sm text-primary font-semibold mb-8">
             {dict.orders.orderNumber}: #{lastOrder.id}
           </p>
+        )}
+        {lastOrder && (
+          <div className="text-right">
+            <DirectMailOrder
+              order={lastOrder}
+              isAr={typedLang === "ar"}
+              t={{
+                title: dict.checkout.directMailTitle,
+                text: dict.checkout.directMailText,
+                button: dict.checkout.directMailButton,
+                copied: dict.checkout.directMailCopied,
+              }}
+            />
+          </div>
         )}
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-8">
           <Link
@@ -138,7 +153,7 @@ export default function CheckoutPage() {
 
     addOrder(order);
     clearCart();
-    setLastOrder({ id, total });
+    setLastOrder(order);
     setSending(false);
     setSuccess(true);
     setToastMsg(dict.toast.orderPlaced);
@@ -278,6 +293,12 @@ export default function CheckoutPage() {
             >
               {sending ? dict.checkout.sending : dict.checkout.submit}
             </button>
+            <p className="text-xs text-text-secondary text-center mt-4">
+              {dict.checkout.privacyNote}{" "}
+              <Link href={`/${typedLang}/privacy`} className="text-primary underline hover:text-primary-light">
+                {dict.footer.privacy}
+              </Link>
+            </p>
           </form>
 
           {/* Order Summary */}
