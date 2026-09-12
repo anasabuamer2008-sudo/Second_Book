@@ -3,15 +3,13 @@ import { useEffect, useRef, useState } from "react";
 
 export function useInView<T extends HTMLElement>(threshold = 0.12) {
   const ref = useRef<T>(null);
-  const [inView, setInView] = useState(false);
+  const [inView, setInView] = useState<boolean>(
+    () => typeof window !== "undefined" && typeof IntersectionObserver === "undefined"
+  );
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (typeof IntersectionObserver === "undefined") {
-      setInView(true);
-      return;
-    }
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {

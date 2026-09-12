@@ -93,12 +93,12 @@ export default function BuyGuide({ lang }: { lang: "ar" | "he" }) {
     <section ref={ref} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
       <div className={`reveal ${inView ? "in-view" : ""}`}>
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 bg-accent/10 text-accent-dark rounded-full px-4 py-1.5 mb-4">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <span className="eyebrow mb-4">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span className="text-xs font-bold">{lang === "he" ? "מדריך רכישה" : "دليل الحجز"}</span>
-          </div>
+            {lang === "he" ? "מדריך הרכישה" : "دليل الحجز والشراء"}
+          </span>
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">{t.title}</h2>
           <p className="text-text-secondary text-sm max-w-lg mx-auto">{t.subtitle}</p>
         </div>
@@ -123,16 +123,16 @@ export default function BuyGuide({ lang }: { lang: "ar" | "he" }) {
         </div>
 
         {/* Delivery options */}
-        <div className="bg-surface-alt border border-border rounded-2xl p-6 md:p-8">
+        <div className="bg-gradient-to-br from-surface to-surface-alt border border-border rounded-2xl p-6 md:p-8">
           <h3 className="font-bold text-foreground text-lg mb-5 text-center">{t.deliveryTitle}</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {t.delivery.map((d, i) => (
               <div
                 key={i}
-                className="flex items-start gap-4 bg-surface rounded-xl p-4 border border-border/50"
+                className="flex items-start gap-4 bg-surface rounded-xl p-4 border border-border/70 shadow-sm"
               >
-                <div className="w-11 h-11 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
-                  <svg className="w-5 h-5 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-11 h-11 rounded-xl bg-accent/15 flex items-center justify-center shrink-0">
+                  <svg className="w-5 h-5 text-accent-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={d.icon} />
                     {d.icon2 && (
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={d.icon2} />

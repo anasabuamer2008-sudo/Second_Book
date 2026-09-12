@@ -398,4 +398,51 @@ export function getBundleTotal(bundle: Bundle): number {
   }, 0);
 }
 
-export const DELIVERY_FEE = 25;
+export interface BookSeries {
+  id: string;
+  labelAr: string;
+  labelHe: string;
+  bookIds: string[];
+}
+
+export const bookSeries: BookSeries[] = [
+  {
+    id: "singles",
+    labelAr: "كتب منفردة مختارة",
+    labelHe: "ספרים עצמאים נבחרים",
+    bookIds: ["1", "2", "21", "24", "25", "26", "27"],
+  },
+  {
+    id: "success-series",
+    labelAr: "سلسلة الناجحون",
+    labelHe: "סדרת המצליחנים",
+    bookIds: [
+      "3", "4", "5", "6", "7", "8", "9", "10", "11",
+      "12", "13", "14", "15", "16", "17", "18", "19", "20",
+    ],
+  },
+  {
+    id: "ana-qra",
+    labelAr: "مجموعة أنا أقرأ",
+    labelHe: "סדרת 'אני קורא'",
+    bookIds: ["22", "23"],
+  },
+  {
+    id: "oxford-library",
+    labelAr: "Oxford Bookworms",
+    labelHe: "Oxford Bookworms",
+    bookIds: ["28", "29", "30", "31", "32", "33", "34", "35"],
+  },
+];
+
+export function seriesIdOf(bookId: string): string {
+  return bookSeries.find((s) => s.bookIds.includes(bookId))?.id ?? "singles";
+}
+
+export function seriesLabel(seriesId: string, isAr: boolean): string {
+  const s = bookSeries.find((x) => x.id === seriesId);
+  if (!s) return isAr ? "كتب منفردة" : "ספרים עצמאיים";
+  return isAr ? s.labelAr : s.labelHe;
+}
+
+export { DELIVERY_FEE, FREE_DELIVERY_THRESHOLD } from "./config";

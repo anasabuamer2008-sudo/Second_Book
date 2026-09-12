@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Order } from "@/store/useCartStore";
 
 const OWNER_EMAIL = "abdallazeed3@gmail.com";
@@ -106,11 +106,6 @@ ${label.deliveryFee}: ${order.deliveryFee ? `₪${order.deliveryFee}` : label.fr
     }
     window.location.href = mailtoUrl;
   };
-
-  useEffect(() => {
-    openMail();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className="max-w-2xl mx-auto mb-8 text-right" dir={isAr ? "rtl" : "ltr"}>

@@ -1,9 +1,38 @@
 import { NextResponse } from "next/server";
 import { buildOrderEmailHTML } from "@/components/email/orderEmail";
+import { OWNER_EMAIL } from "@/lib/config";
 
-const OWNER_EMAIL = "abdallazeed3@gmail.com";
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^[+0-9][\d\s()\-]{5,}$/;
+const LANGUAGES = new Set(["ar", "he"]);
+const METHODS = new Set(["delivery", "pickup"]);
+
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 5;
+const hits = new Map<string, number[]>();
+
+function isRateLimited(ip: string | null): boolean {
+  if (!ip) return false;
+  const now = Date.now();
+  const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_LIMIT_WINDOW_MS);
+  if (recent.length >= RATE_LIMIT_MAX) {
+    hits.set(ip, recent);
+    return true;
+  }
+  recent.push(now);
+  hits.set(ip, recent);
+  return false;
+}
 
 export async function POST(req: Request) {
+  const ip =
+    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip");
+
+  if (isRateLimited(ip)) {
+    return NextResponse.json({ success: false, error: "Too many requests" }, { status: 429 });
+  }
+
   let order;
   try {
     order = await req.json();
@@ -11,9 +40,59 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid payload" }, { status: 400 });
   }
 
-  const customer = order?.customer;
-  if (!customer?.fullName || !customer?.email || !customer?.phone || !Array.isArray(order?.items) || order.items.length === 0) {
-    return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
+  if (!order || typeof order !== "object") {
+    return NextResponse.json({ success: false, error: "Invalid payload" }, { status: 400 });
+  }
+
+  const customer = order.customer;
+  if (
+    !customer ||
+    typeof customer.fullName !== "string" ||
+    customer.fullName.trim().length < 2 ||
+    typeof customer.email !== "string" ||
+    !EMAIL_RE.test(customer.email.trim()) ||
+    typeof customer.phone !== "string" ||
+    !PHONE_RE.test(customer.phone.trim()) ||
+    !LANGUAGES.has(customer.language)
+  ) {
+    return NextResponse.json(
+      { success: false, error: "Missing or invalid customer fields" },
+      { status: 400 }
+    );
+  }
+
+  if (
+    !Array.isArray(order.items) ||
+    order.items.length === 0 ||
+    order.items.some(
+      (b: unknown) =>
+        !b ||
+        typeof (b as { id?: unknown }).id !== "string" ||
+        typeof (b as { title?: unknown }).title !== "string" ||
+        typeof (b as { price?: unknown }).price !== "number" ||
+        Number.isNaN((b as { price: number }).price)
+    )
+  ) {
+    return NextResponse.json(
+      { success: false, error: "Missing or invalid items" },
+      { status: 400 }
+    );
+  }
+
+  if (
+    typeof order.id !== "string" ||
+    !Number.isFinite(order.subtotal) ||
+    !Number.isFinite(order.deliveryFee) ||
+    !Number.isFinite(order.total) ||
+    !order.delivery ||
+    !METHODS.has(order.delivery.method) ||
+    (order.delivery.method === "delivery" &&
+      (typeof order.delivery.address !== "string" || order.delivery.address.trim().length < 5))
+  ) {
+    return NextResponse.json(
+      { success: false, error: "Missing or invalid order fields" },
+      { status: 400 }
+    );
   }
 
   const ownerEmail = process.env.ORDER_EMAIL || OWNER_EMAIL;

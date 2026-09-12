@@ -1,14 +1,22 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { getDictionary } from "@/dictionaries";
 import { sampleBooks, sampleBundles } from "@/lib/books";
+import { bookSeries, seriesIdOf, seriesLabel } from "@/lib/books";
 import { Book } from "@/store/useCartStore";
-import Bookcase from "@/components/ui/BookShelf";
-import BookModal from "@/components/ui/BookModal";
+import BookCard from "@/components/ui/BookCard";
 import BundleCard from "@/components/ui/BundleCard";
 import BuyGuide from "@/components/ui/BuyGuide";
 import Toast from "@/components/ui/Toast";
+import dynamic from "next/dynamic";
+
+const BookModal = dynamic(() => import("@/components/ui/BookModal"), { ssr: false });
+
+type SortKey = "default" | "priceAsc" | "priceDesc";
+type CatKey = "all" | string;
+
+const CONDITIONS = ["all", "like-new", "good", "acceptable"] as const;
 
 export default function BooksPage() {
   const { lang } = useParams<{ lang: string }>();
@@ -16,18 +24,74 @@ export default function BooksPage() {
   const typedLang = lang === "he" ? "he" : "ar";
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
+  const [cat, setCat] = useState<CatKey>("all");
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
+  const [sort, setSort] = useState<SortKey>("default");
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
-  const q = query.trim().toLowerCase();
-  const filteredBooks = sampleBooks.filter(
-    (b) =>
-      (filter === "all" || b.condition === filter) &&
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(query.trim().toLowerCase()), 250);
+    return () => clearTimeout(t);
+  }, [query]);
+
+  const counts = useMemo(() => {
+    const q = debouncedQuery;
+    const matches = (b: Book) =>
+      (cat === "all" || seriesIdOf(b.id) === cat) &&
       (!q ||
         b.title.toLowerCase().includes(q) ||
         b.author.toLowerCase().includes(q) ||
-        (b.description || "").toLowerCase().includes(q))
-  );
+        (b.description || "").toLowerCase().includes(q));
+    return CONDITIONS.map((c) => ({
+      key: c,
+      count: sampleBooks.filter((b) => (c === "all" || b.condition === c) && matches(b)).length,
+    }));
+  }, [debouncedQuery, cat]);
+
+  const filteredBooks = useMemo(() => {
+    const q = debouncedQuery;
+    let list = sampleBooks.filter(
+      (b) =>
+        (cat === "all" || seriesIdOf(b.id) === cat) &&
+        (filter === "all" || b.condition === filter) &&
+        (!q ||
+          b.title.toLowerCase().includes(q) ||
+          b.author.toLowerCase().includes(q) ||
+          (b.description || "").toLowerCase().includes(q))
+    );
+    if (cat === "all") {
+      list = bookSeries.flatMap((s) =>
+        s.bookIds
+          .map((id) => list.find((b) => b.id === id))
+          .filter((b): b is Book => Boolean(b))
+      );
+    }
+    if (sort === "priceAsc") list = [...list].sort((a, b) => a.price - b.price);
+    if (sort === "priceDesc") list = [...list].sort((a, b) => b.price - a.price);
+    return list;
+  }, [debouncedQuery, filter, cat, sort]);
+
+  const isGroupedDefault =
+    cat === "all" &&
+    filter === "all" &&
+    !debouncedQuery &&
+    sort === "default";
+
+  const segments = useMemo(() => {
+    if (!isGroupedDefault) return null;
+    const remaining = new Set(filteredBooks.map((b) => b.id));
+    return bookSeries
+      .map((s) => ({
+        id: s.id,
+        labelAr: s.labelAr,
+        labelHe: s.labelHe,
+        books: s.bookIds
+          .map((id) => sampleBooks.find((b) => b.id === id))
+          .filter((b): b is Book => Boolean(b) && remaining.has((b as Book).id)),
+      }))
+      .filter((s) => s.books.length > 0);
+  }, [filteredBooks, isGroupedDefault]);
 
   const schema = {
     "@context": "https://schema.org",
@@ -35,7 +99,7 @@ export default function BooksPage() {
     name: "Second Book",
     alternateName: dict.hero.title,
     availableLanguage: ["ar", "he"],
-    url: "https://second-book.example.com/books",
+    url: `/books`,
     makesOffer: sampleBooks.map((b) => ({
       "@type": "Offer",
       itemOffered: {
@@ -48,12 +112,28 @@ export default function BooksPage() {
     })),
   };
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: dict.nav.home, item: `/${typedLang}` },
+      { "@type": "ListItem", position: 2, name: dict.books.title, item: `/${typedLang}/books` },
+    ],
+  };
+
+  const sortOptions: { key: SortKey; label: string }[] = [
+    { key: "default", label: dict.books.sortDefault },
+    { key: "priceAsc", label: dict.books.priceAsc },
+    { key: "priceDesc", label: dict.books.priceDesc },
+  ];
+
   return (
     <>
       {toastMsg && <Toast message={toastMsg} onClose={() => setToastMsg(null)} />}
       <BookModal
         book={selectedBook}
         onClose={() => setSelectedBook(null)}
+        lang={typedLang}
         dict={dict}
         onToast={setToastMsg}
       />
@@ -61,79 +141,43 @@ export default function BooksPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
 
-      {/* Page header */}
-      <section className="bg-gradient-to-br from-primary-dark via-primary to-primary-light text-white relative overflow-hidden">
-        {/* decorative orbs */}
-        <div className="absolute inset-0 opacity-10 pointer-events-none">
-          <div className="absolute top-6 right-12 w-64 h-64 bg-white rounded-full blur-3xl" />
-          <div className="absolute bottom-6 left-8 w-48 h-48 bg-accent rounded-full blur-3xl" />
+      {/* ================= Header ================= */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary-dark via-primary to-primary border-b border-primary-dark/40">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-24 right-1/3 w-96 h-96 rounded-full bg-white/10 blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-72 h-72 rounded-full bg-accent/25 blur-3xl" />
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-18 relative">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3 fade-up">{dict.books.title}</h1>
-          <p className="text-white/80 text-base md:text-lg mb-2 fade-up" style={{ animationDelay: "80ms" }}>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-16">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 text-white text-xs font-bold backdrop-blur-sm mb-4 fade-up">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            {dict.hero.subtitle}
+          </span>
+          <h1 className="text-white mb-3 fade-up" style={{ animationDelay: "60ms" }}>
+            {dict.books.title}
+          </h1>
+          <p className="text-white/80 text-base md:text-lg mb-2 fade-up" style={{ animationDelay: "120ms" }}>
             {dict.books.subtitle}
           </p>
-          <p className="text-white/60 text-sm fade-up" style={{ animationDelay: "150ms" }}>
-            {dict.books.count}: {sampleBooks.length}
+          <p className="text-white/60 text-sm fade-up" style={{ animationDelay: "180ms" }}>
+            {dict.books.count}: <span className="font-bold text-white/80">{sampleBooks.length}</span>
           </p>
         </div>
       </section>
 
-      {/* ---- String lights decoration ---- */}
-      <div className="relative bg-gradient-to-b from-primary-light/8 to-transparent pt-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          {/* wire */}
-          <svg className="w-full h-6 text-foreground/15" viewBox="0 0 1200 24" fill="none">
-            <path d="M0 4 C 200 22, 400 4, 600 18 S 1000 4, 1200 14" stroke="currentColor" strokeWidth="1.5" />
-          </svg>
-          {/* lights */}
-          <div className="absolute inset-x-0 top-0 flex justify-around px-8 pt-1">
-            {[...Array(14)].map((_, i) => (
-              <div
-                key={i}
-                className="string-light"
-                style={{ animationDelay: `${i * 0.35}s` }}
-              />
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* ---- Promo / Bundles Section ---- */}
-      {sampleBundles.length > 0 && (
-        <section id="promo" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="bg-accent/15 text-accent-dark text-xs font-bold px-3 py-1 rounded-full">
-              ₪
-            </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-foreground">{dict.promo.title}</h2>
-          </div>
-          <p className="text-text-secondary mb-8">{dict.promo.subtitle}</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {sampleBundles.map((bundle) => (
-              <BundleCard
-                key={bundle.id}
-                bundle={bundle}
-                dict={{ ...dict.promo }}
-                isAr={typedLang === "ar"}
-                onToast={setToastMsg}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ---- Books on Shelves Section ---- */}
-      <section id="books" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
-          <h2 className="text-3xl font-bold text-foreground">{dict.books.title}</h2>
-
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-12">
+        {/* ================= Search + Toolbar ================= */}
+        <div className="flex flex-col lg:flex-row lg:items-center gap-4 justify-between mb-8">
           {/* Search */}
-          <div className="relative w-full lg:w-80">
+          <div className="relative w-full lg:max-w-md">
             <svg
-              className="w-5 h-5 absolute top-1/2 -translate-y-1/2 right-3.5 text-text-secondary pointer-events-none"
+              className="w-5 h-5 absolute top-1/2 -translate-y-1/2 right-4 text-text-secondary pointer-events-none"
               fill="none" stroke="currentColor" viewBox="0 0 24 24"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -143,52 +187,212 @@ export default function BooksPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={dict.trust.searchPlaceholder}
-              className="w-full pl-4 pr-11 py-3 bg-surface border border-border rounded-xl text-foreground placeholder:text-text-secondary focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all"
+              className="w-full pr-12 pl-4 py-3.5 bg-surface border border-border rounded-2xl text-foreground placeholder:text-text-secondary focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all shadow-sm"
             />
+            {query && (
+              <button
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                className="absolute top-1/2 -translate-y-1/2 left-3.5 w-6 h-6 rounded-full bg-surface-alt flex items-center justify-center text-text-secondary hover:text-foreground transition-colors cursor-pointer"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+
+          {/* Sort */}
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-semibold text-text-secondary whitespace-nowrap">
+              {dict.books.sortBy}:
+            </label>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortKey)}
+              className="px-4 py-3 bg-surface border border-border rounded-xl text-sm font-medium text-foreground focus:ring-2 focus:ring-primary outline-none transition-all cursor-pointer shadow-sm"
+            >
+              {sortOptions.map((o) => (
+                <option key={o.key} value={o.key}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-wrap gap-2 mb-10">
+        {/* ================= Categories ================= */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          <button
+            onClick={() => setCat("all")}
+            aria-pressed={cat === "all"}
+            className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer border ${
+              cat === "all"
+                ? "bg-foreground text-background border-foreground shadow-md"
+                : "bg-surface text-text-secondary border-border hover:border-foreground/40 hover:text-foreground"
+            }`}
+          >
+            {dict.books.filterAll}
+          </button>
+          {bookSeries.map((s) => (
+            <button
+              key={s.id}
+              onClick={() => setCat(s.id)}
+              aria-pressed={cat === s.id}
+              className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer border ${
+                cat === s.id
+                  ? "bg-foreground text-background border-foreground shadow-md"
+                  : "bg-surface text-text-secondary border-border hover:border-foreground/40 hover:text-foreground"
+              }`}
+            >
+              {seriesLabel(s.id, typedLang === "ar")}
+            </button>
+          ))}
+        </div>
+
+        {/* ================= Filter pills ================= */}
+        <div className="flex flex-wrap gap-2 mb-8">
           {[
             { key: "all", label: dict.books.filterAll },
             { key: "like-new", label: dict.books.filterNew },
             { key: "good", label: dict.books.filterGood },
             { key: "acceptable", label: dict.books.filterAcceptable },
-          ].map((f) => (
-            <button
-              key={f.key}
-              onClick={() => setFilter(f.key)}
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer ${
-                filter === f.key
-                  ? "bg-primary text-white shadow-md"
-                  : "bg-surface-alt text-text-secondary hover:bg-border"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
+          ].map((f) => {
+            const count = counts.find((c) => c.key === f.key)?.count ?? 0;
+            const active = filter === f.key;
+            return (
+              <button
+                key={f.key}
+                onClick={() => setFilter(f.key)}
+                aria-pressed={active}
+                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer border ${
+                  active
+                    ? "bg-primary text-white border-primary shadow-md shadow-primary/20"
+                    : "bg-surface text-text-secondary border-border hover:border-primary/40 hover:text-foreground"
+                }`}
+              >
+                {f.label}
+                <span
+                  className={`text-[11px] font-bold px-1.5 py-0.5 rounded-full ${
+                    active ? "bg-white/20 text-white" : "bg-surface-alt text-text-secondary"
+                  }`}
+                >
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+
+          {/* Result count */}
+          <span className="ms-auto inline-flex items-center gap-1.5 text-sm text-text-secondary">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            {filteredBooks.length} {dict.books.results}
+          </span>
         </div>
 
-        {filteredBooks.length > 0 ? (
-          <Bookcase
-            books={filteredBooks}
-            dict={dict}
-            onBookClick={setSelectedBook}
-          />
-        ) : (
-          <div className="text-center py-20">
-            <svg className="w-20 h-20 mx-auto text-border mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <p className="text-text-secondary text-lg">
-              {query ? dict.books.noResults : dict.books.noBooks}
-            </p>
-          </div>
-        )}
-      </section>
+        {/* ================= Bundles ================= */}
+        {sampleBundles.length > 0 && !debouncedQuery && (
+          <section id="promo" className="mb-12">
+            <div className="flex items-center gap-3 mb-2">
+              <span className="eyebrow">
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                ₪
+              </span>
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground">{dict.promo.title}</h2>
+            </div>
+            <p className="text-text-secondary mb-8">{dict.promo.subtitle}</p>
 
-      {/* ---- Buying Guide ---- */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {sampleBundles.map((bundle) => (
+                <BundleCard
+                  key={bundle.id}
+                  bundle={bundle}
+                  dict={{ ...dict.promo }}
+                  isAr={typedLang === "ar"}
+                  onToast={setToastMsg}
+                />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ================= Books grid ================= */}
+        <section id="books">
+          {filteredBooks.length > 0 ? (
+            segments ? (
+              <div className="flex flex-col gap-10">
+                {segments.map((seg, si) => (
+                  <div key={seg.id}>
+                    <div className="flex items-center gap-4 mb-5">
+                      <h3 className="font-extrabold text-foreground text-lg shrink-0">
+                        {typedLang === "ar" ? seg.labelAr : seg.labelHe}
+                      </h3>
+                      <span className="h-px flex-1 bg-border" />
+                      <span className="text-xs font-bold text-text-secondary">
+                        {seg.books.length} {dict.books.results}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                      {seg.books.map((book, i) => (
+                        <BookCard
+                          key={book.id}
+                          book={book}
+                          dict={dict.books}
+                          onOpen={setSelectedBook}
+                          index={si * 10 + i}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                {filteredBooks.map((book, i) => (
+                  <BookCard
+                    key={book.id}
+                    book={book}
+                    dict={dict.books}
+                    onOpen={setSelectedBook}
+                    index={i}
+                  />
+                ))}
+              </div>
+            )
+          ) : (
+            <div className="text-center py-20">
+              <div className="w-20 h-20 mx-auto rounded-2xl bg-surface-alt flex items-center justify-center mb-5">
+                <svg className="w-10 h-10 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <h3 className="font-bold text-foreground text-lg mb-1">
+                {query ? dict.books.noResults : dict.books.noBooks}
+              </h3>
+              <p className="text-text-secondary text-sm mb-6">{dict.trust.searchPlaceholder}</p>
+              {query && (
+                <button
+                  onClick={() => {
+                    setQuery("");
+                    setFilter("all");
+                    setCat("all");
+                    setSort("default");
+                  }}
+                  className="px-6 py-3 bg-primary text-white text-sm font-bold rounded-xl hover:bg-primary-light active:scale-95 transition-all duration-200 cursor-pointer"
+                >
+                  {typedLang === "ar" ? "مسح البحث والفلترة" : "ניקוי חיפוש וסינון"}
+                </button>
+              )}
+            </div>
+          )}
+        </section>
+      </div>
+
+      {/* ================= Buying guide ================= */}
       <BuyGuide lang={typedLang} />
     </>
   );
