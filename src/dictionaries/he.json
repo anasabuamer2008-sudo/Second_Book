@@ -31,6 +31,8 @@
     "noResults": "לא נמצאו תוצאות לחיפוש",
     "condition": "מצב",
     "singleCopy": "עותק אחד בלבד",
+    "more": "עוד",
+    "less": "פחות",
     "conditions": {
       "like-new": "במצב חדש",
       "good": "במצב טוב",

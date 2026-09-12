@@ -31,6 +31,8 @@
     "noResults": "لا توجد نتائج مطابقة لبحثك",
     "condition": "الحالة",
     "singleCopy": "نسخة واحدة فقط",
+    "more": "المزيد",
+    "less": "أقل",
     "conditions": {
       "like-new": "كالجديد",
       "good": "بحالة جيدة",

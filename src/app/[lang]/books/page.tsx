@@ -3,8 +3,11 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { getDictionary } from "@/dictionaries";
 import { sampleBooks, sampleBundles } from "@/lib/books";
-import BookCard from "@/components/ui/BookCard";
+import { Book } from "@/store/useCartStore";
+import Bookcase from "@/components/ui/BookShelf";
+import BookModal from "@/components/ui/BookModal";
 import BundleCard from "@/components/ui/BundleCard";
+import BuyGuide from "@/components/ui/BuyGuide";
 import Toast from "@/components/ui/Toast";
 
 export default function BooksPage() {
@@ -14,6 +17,7 @@ export default function BooksPage() {
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
   const [query, setQuery] = useState("");
+  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
 
   const q = query.trim().toLowerCase();
   const filteredBooks = sampleBooks.filter(
@@ -47,45 +51,82 @@ export default function BooksPage() {
   return (
     <>
       {toastMsg && <Toast message={toastMsg} onClose={() => setToastMsg(null)} />}
+      <BookModal
+        book={selectedBook}
+        onClose={() => setSelectedBook(null)}
+        dict={dict}
+        onToast={setToastMsg}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
 
       {/* Page header */}
-      <section className="bg-gradient-to-br from-primary-dark via-primary to-primary-light text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-18">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">{dict.books.title}</h1>
-          <p className="text-white/80 text-base md:text-lg mb-6">{dict.books.subtitle}</p>
-          <p className="text-white/70 text-sm">{dict.books.count}: {sampleBooks.length}</p>
+      <section className="bg-gradient-to-br from-primary-dark via-primary to-primary-light text-white relative overflow-hidden">
+        {/* decorative orbs */}
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute top-6 right-12 w-64 h-64 bg-white rounded-full blur-3xl" />
+          <div className="absolute bottom-6 left-8 w-48 h-48 bg-accent rounded-full blur-3xl" />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-18 relative">
+          <h1 className="text-3xl md:text-4xl font-bold mb-3 fade-up">{dict.books.title}</h1>
+          <p className="text-white/80 text-base md:text-lg mb-2 fade-up" style={{ animationDelay: "80ms" }}>
+            {dict.books.subtitle}
+          </p>
+          <p className="text-white/60 text-sm fade-up" style={{ animationDelay: "150ms" }}>
+            {dict.books.count}: {sampleBooks.length}
+          </p>
         </div>
       </section>
 
-      {/* Promo / Bundles Section */}
-      <section id="promo" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="flex items-center gap-3 mb-2">
-          <span className="bg-accent/15 text-accent-dark text-xs font-bold px-3 py-1 rounded-full">
-            ₪
-          </span>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">{dict.promo.title}</h2>
+      {/* ---- String lights decoration ---- */}
+      <div className="relative bg-gradient-to-b from-primary-light/8 to-transparent pt-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          {/* wire */}
+          <svg className="w-full h-6 text-foreground/15" viewBox="0 0 1200 24" fill="none">
+            <path d="M0 4 C 200 22, 400 4, 600 18 S 1000 4, 1200 14" stroke="currentColor" strokeWidth="1.5" />
+          </svg>
+          {/* lights */}
+          <div className="absolute inset-x-0 top-0 flex justify-around px-8 pt-1">
+            {[...Array(14)].map((_, i) => (
+              <div
+                key={i}
+                className="string-light"
+                style={{ animationDelay: `${i * 0.35}s` }}
+              />
+            ))}
+          </div>
         </div>
-        <p className="text-text-secondary mb-8">{dict.promo.subtitle}</p>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {sampleBundles.map((bundle) => (
-            <BundleCard
-              key={bundle.id}
-              bundle={bundle}
-              dict={{ ...dict.promo }}
-              isAr={typedLang === "ar"}
-              onToast={setToastMsg}
-            />
-          ))}
-        </div>
-      </section>
+      {/* ---- Promo / Bundles Section ---- */}
+      {sampleBundles.length > 0 && (
+        <section id="promo" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-6">
+          <div className="flex items-center gap-3 mb-2">
+            <span className="bg-accent/15 text-accent-dark text-xs font-bold px-3 py-1 rounded-full">
+              ₪
+            </span>
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground">{dict.promo.title}</h2>
+          </div>
+          <p className="text-text-secondary mb-8">{dict.promo.subtitle}</p>
 
-      {/* Books Section */}
-      <section id="books" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sampleBundles.map((bundle) => (
+              <BundleCard
+                key={bundle.id}
+                bundle={bundle}
+                dict={{ ...dict.promo }}
+                isAr={typedLang === "ar"}
+                onToast={setToastMsg}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ---- Books on Shelves Section ---- */}
+      <section id="books" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
           <h2 className="text-3xl font-bold text-foreground">{dict.books.title}</h2>
 
@@ -108,7 +149,7 @@ export default function BooksPage() {
         </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 mb-10">
           {[
             { key: "all", label: dict.books.filterAll },
             { key: "like-new", label: dict.books.filterNew },
@@ -130,17 +171,11 @@ export default function BooksPage() {
         </div>
 
         {filteredBooks.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredBooks.map((book) => (
-              <BookCard
-                key={book.id}
-                book={book}
-                dict={dict}
-                lang={typedLang}
-                onToast={setToastMsg}
-              />
-            ))}
-          </div>
+          <Bookcase
+            books={filteredBooks}
+            dict={dict}
+            onBookClick={setSelectedBook}
+          />
         ) : (
           <div className="text-center py-20">
             <svg className="w-20 h-20 mx-auto text-border mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -152,6 +187,9 @@ export default function BooksPage() {
           </div>
         )}
       </section>
+
+      {/* ---- Buying Guide ---- */}
+      <BuyGuide lang={typedLang} />
     </>
   );
 }

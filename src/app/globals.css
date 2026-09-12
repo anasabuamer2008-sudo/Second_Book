@@ -185,3 +185,468 @@ button {
 }
 
 .fade-up { animation: fadeUp 0.6s ease-out both; }
+
+/* =====================================================
+   Bookstore Shelves — 3D standing books + animations
+   ===================================================== */
+
+/* Book drops onto the shelf (entrance) */
+@keyframes dropIn {
+  0%   { transform: translateY(-54px); opacity: 0; }
+  55%  { transform: translateY(6px);   opacity: 1; }
+  75%  { transform: translateY(-3px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes shadowPulse {
+  0%, 100% { opacity: 0.45; transform: translateX(-50%) scaleX(1); }
+  50%      { opacity: 0.85; transform: translateX(-50%) scaleX(1.12); }
+}
+
+/* Warm bookstore wallpaper */
+.shelf-wall {
+  background:
+    radial-gradient(120% 90% at 50% -10%, rgba(255, 255, 255, 0.14), transparent 55%),
+    radial-gradient(90% 60% at 85% 110%, rgba(194, 147, 60, 0.12), transparent 60%),
+    repeating-linear-gradient(90deg, rgba(61, 42, 26, 0.04) 0 2px, transparent 2px 30px),
+    linear-gradient(165deg, #f1e3c6 0%, #e7d3ab 55%, #dec497 100%);
+}
+
+/* Wooden shelf plank */
+.shelf-wood {
+  position: relative;
+  height: 20px;
+  background: linear-gradient(180deg, #c2854a 0%, #9c642e 52%, #7c4c1f 100%);
+  box-shadow:
+    inset 0 2px 1px rgba(255, 255, 255, 0.28),
+    inset 0 -4px 8px rgba(0, 0, 0, 0.3),
+    0 12px 22px -10px rgba(30, 14, 4, 0.55);
+}
+.shelf-wood::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, rgba(61, 42, 26, 0.08) 0 2px, transparent 2px 22px),
+    linear-gradient(90deg, rgba(255,255,255,0.06), transparent 40%, transparent 60%, rgba(0,0,0,0.08));
+}
+.shelf-wood::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 4%;
+  right: 4%;
+  height: 10px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.22), transparent);
+}
+
+/* 3D standing book ---------- */
+.book-stand {
+  position: relative;
+  width: calc(var(--bs-h) * 0.66);
+  height: var(--bs-h);
+  perspective: 1000px;
+  animation: dropIn 0.75s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.bs-inner {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateY(var(--bs-ry, -13deg)) rotateX(6deg);
+  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.book-stand:hover .bs-inner {
+  transform: rotateY(0deg) rotateX(0deg) translateY(-14px);
+}
+
+.bs-cover {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  border-radius: 3px 9px 9px 3px;
+  transform: translateZ(var(--bs-depth, 18px));
+  box-shadow:
+    inset -12px 0 18px rgba(0, 0, 0, 0.32),
+    inset 6px 0 14px rgba(255, 255, 255, 0.1),
+    0 22px 40px -18px rgba(30, 14, 4, 0.55);
+  transition: box-shadow 0.4s ease;
+}
+
+.book-stand:hover .bs-cover {
+  box-shadow:
+    inset -12px 0 18px rgba(0, 0, 0, 0.32),
+    inset 6px 0 14px rgba(255, 255, 255, 0.1),
+    0 34px 56px -18px rgba(30, 14, 4, 0.6);
+}
+
+.bs-spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--bs-depth, 18px);
+  transform: rotateY(-90deg);
+  transform-origin: 0% 50%;
+  background: linear-gradient(180deg, #2b1a0e, #120b05 60%, #241409);
+  border-radius: 3px 0 0 3px;
+  box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.bs-top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--bs-depth, 18px);
+  transform: rotateX(-90deg);
+  transform-origin: 50% 0%;
+  background: repeating-linear-gradient(to bottom, #f4ead0 0 2px, #d9c89c 2px 4px);
+  box-shadow: inset 0 -3px 6px rgba(0, 0, 0, 0.18);
+}
+
+/* Ribbon bookmark sticking from the top */
+.bs-bookmark {
+  position: absolute;
+  top: -4px;
+  right: 24%;
+  width: 8px;
+  height: 30px;
+  border-radius: 0 0 4px 4px;
+  background: linear-gradient(180deg, var(--accent), #b07e22);
+  transform: translateZ(calc(var(--bs-depth, 18px) + 2px)) rotate(-5deg);
+  transform-origin: top center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Ground shadow the book casts on the shelf */
+.bs-ground {
+  position: absolute;
+  bottom: -14px;
+  left: 50%;
+  width: 130%;
+  height: 14px;
+  transform: translateX(-50%);
+  background: radial-gradient(50% 100% at 50% 50%, rgba(20, 10, 3, 0.4), transparent 70%);
+  filter: blur(2px);
+  animation: shadowPulse 4.5s ease-in-out infinite;
+}
+
+/* Hanging price sticker */
+.bs-tag {
+  position: absolute;
+  top: 8px;
+  right: -6px;
+  transform: translateZ(calc(var(--bs-depth, 18px) + 4px));
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 800;
+  border: 1.5px solid var(--accent);
+  box-shadow: 0 6px 14px -4px rgba(0, 0, 0, 0.35);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 3;
+}
+
+.book-stand:hover .bs-tag {
+  transform: translateZ(calc(var(--bs-depth, 18px) + 4px)) translateY(-16px);
+}
+
+/* Wood grain detail under books */
+.wood-shadow {
+  position: absolute;
+  bottom: -4px;
+  left: 2%;
+  right: 2%;
+  height: 8px;
+  background: radial-gradient(60% 100% at 50% 0%, rgba(30, 14, 4, 0.28), transparent);
+  filter: blur(1px);
+}
+
+/* Scroll reveal */
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(28px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.reveal { opacity: 0; }
+.reveal.in-view { animation: revealUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* String lights glow */
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.45; box-shadow: 0 0 5px 2px rgba(255, 236, 170, 0.55); }
+  50%      { opacity: 1;    box-shadow: 0 0 14px 6px rgba(255, 240, 185, 0.95); }
+}
+
+.string-light {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 35%, #fff7da, #f3c75f);
+  animation: glowPulse 3s ease-in-out infinite;
+}
+
+/* Bundle swinging ribbon tag */
+@keyframes swingTag {
+  0%, 100% { transform: rotate(-4deg); }
+  50%      { transform: rotate(4deg); }
+}
+
+.swing-tag {
+  animation: swingTag 3.2s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+/* Bundle books gently float */
+@keyframes softFloat {
+  0%, 100% { transform: translateY(0) rotateY(var(--bs-ry, -13deg)) rotateX(6deg); }
+  50%      { transform: translateY(-6px) rotateY(var(--bs-ry, -13deg)) rotateX(6deg); }
+}
+
+.bs-inner.float-slow {
+  animation: softFloat 5.5s ease-in-out infinite;
+}
+
+/* Bundle ribbon wrap */
+.bundle-ribbon {
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  left: -7px;
+  width: 14px;
+  transform: translateZ(calc(var(--bs-depth, 18px) + 3px));
+  background: linear-gradient(90deg, #d63031, #a51d1e 55%, #7c1314);
+  border-radius: 3px;
+  box-shadow: 0 8px 18px -6px rgba(0, 0, 0, 0.45);
+}
+
+.bundle-ribbon::before,
+.bundle-ribbon::after {
+  content: "";
+  position: absolute;
+  right: 50%;
+  width: 18px;
+  height: 12px;
+  background: linear-gradient(90deg, #d63031, #b32425);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 70%, 0 100%);
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+}
+
+.bundle-ribbon::before { top: -2px; transform: translateX(50%) rotate(180deg); }
+.bundle-ribbon::after { bottom: -2px; transform: translateX(50%); }
+
+/* Floating decorative orbs on the wall */
+.wall-orb {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+@keyframes orbDrift {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+
+.orb-drift { animation: orbDrift 6s ease-in-out infinite; }
+
+/* =====================================================
+   Large wooden bookcase (shelving unit)
+   ===================================================== */
+
+.bookcase {
+  position: relative;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, 
+      rgba(255,255,255,0.06),
+      rgba(0,0,0,0.06)),
+    linear-gradient(160deg, #b97a3f 0%, #9a622c 35%, #7d4d20 70%, #683e18 100%);
+  box-shadow:
+    inset 0 2px 1px rgba(255,255,255,0.35),
+    inset 0 -2px 3px rgba(0,0,0,0.4),
+    0 30px 60px -24px rgba(30, 14, 4, 0.6);
+  padding: 10px;
+  border: 2px solid #6b4018;
+}
+
+.bookcase::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  background: repeating-linear-gradient(90deg, rgba(255,255,255,0.035) 0 3px, transparent 3px 26px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.06) 0 2px, transparent 2px 46px);
+  pointer-events: none;
+}
+
+/* vertical dividers creating bay sections */
+.bookcase-bay {
+  position: relative;
+  border-radius: 8px;
+  background:
+    radial-gradient(130% 90% at 50% -10%, rgba(255,255,255,0.14), transparent 55%),
+    linear-gradient(165deg, #f1e3c6 0%, #e7d3ab 55%, #dec497 100%);
+  box-shadow: inset 0 0 0 1px rgba(120, 74, 28, 0.25);
+  overflow: visible;
+}
+
+/* back wall dots (like boards) */
+.bookcase-bay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(rgba(120, 74, 28, 0.12) 1px, transparent 1.5px);
+  background-size: 16px 18px;
+  pointer-events: none;
+}
+
+/* a single shelf row inside a bay */
+.bookcase-shelf {
+  position: relative;
+  padding: 6px 10px 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 8px;
+  min-height: 176px;
+}
+
+/* the plank under each shelf row */
+.bookshelf-plank {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 16px;
+  background: linear-gradient(180deg, #c2854a 0%, #9c642e 55%, #7a4a20 100%);
+  box-shadow:
+    inset 0 2px 1px rgba(255,255,255,0.28),
+    inset 0 -4px 7px rgba(0,0,0,0.32),
+    0 6px 14px -6px rgba(20,10,3,0.4);
+}
+.bookshelf-plank::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 18px),
+    linear-gradient(180deg, rgba(255,255,255,0.04), transparent 50%, rgba(0,0,0,0.1));
+}
+.bookshelf-plank::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 6%;
+  right: 6%;
+  height: 8px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.22), transparent);
+}
+
+/* bookcase corner label tag */
+.bookcase-label {
+  position: absolute;
+  bottom: 14%;
+  right: 0;
+  padding: 4px 10px;
+  border-radius: 8px 0 0 8px;
+  background: rgba(255,253,246,0.92);
+  border: 1px solid var(--accent);
+  border-right: none;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 4px 10px -3px rgba(0,0,0,0.3);
+  z-index: 3;
+  letter-spacing: 0.02em;
+}
+
+/* ========== Book Modal 3D ========== */
+.book-modal-3d {
+  width: 200px;
+  height: 280px;
+  transform-style: preserve-3d;
+}
+
+.book-modal-scene {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateY(-30deg) rotateX(5deg);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.book-modal-open .book-modal-scene {
+  transform: rotateY(-15deg) rotateX(2deg) translateY(-8px);
+}
+
+/* Cover (front face) */
+.book-modal-cover {
+  position: absolute;
+  inset: 0;
+  transform: translateZ(20px);
+  border-radius: 3px 12px 12px 3px;
+  box-shadow:
+    inset -14px 0 22px rgba(0, 0, 0, 0.35),
+    inset 6px 0 14px rgba(255, 255, 255, 0.1),
+    0 30px 60px -15px rgba(30, 14, 4, 0.55);
+  overflow: hidden;
+  transition: box-shadow 0.6s ease, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.book-modal-open .book-modal-cover {
+  transform: translateZ(20px) rotateY(0deg);
+  box-shadow:
+    inset -14px 0 22px rgba(0, 0, 0, 0.35),
+    inset 6px 0 14px rgba(255, 255, 255, 0.1),
+    0 40px 70px -15px rgba(30, 14, 4, 0.6);
+}
+
+/* Spine (left side) */
+.book-modal-spine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 20px;
+  transform: rotateY(-90deg);
+  transform-origin: 0% 50%;
+  background: linear-gradient(180deg, #2b1a0e, #120b05 60%, #241409);
+  border-radius: 3px 0 0 3px;
+  box-shadow: inset -3px 0 6px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+/* Pages edge (visible when open) */
+.book-modal-pages {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  right: 0;
+  width: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    #f4ead0 0 2px,
+    #d9c89c 2px 4px
+  );
+  border-radius: 0 2px 2px 0;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+  box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.12);
+}
+
+.book-modal-open .book-modal-pages {
+  width: 18px;
+}
+
+/* Subtle floating animation when open */
+@keyframes modalBookFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+.book-modal-open .book-modal-3d {
+  animation: modalBookFloat 4s ease-in-out infinite 1s;
+}

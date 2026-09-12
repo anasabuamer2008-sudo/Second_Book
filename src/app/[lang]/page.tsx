@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { getDictionary } from "@/dictionaries";
 import Toast from "@/components/ui/Toast";
+import BuyGuide from "@/components/ui/BuyGuide";
 import Link from "next/link";
 
 const SEARCH_ICONS = [
@@ -97,6 +98,9 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* Buying Guide */}
+      <BuyGuide lang={typedLang} />
     </>
   );
 }
