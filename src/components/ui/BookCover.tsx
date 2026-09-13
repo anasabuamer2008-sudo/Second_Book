@@ -1,18 +1,34 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 interface BookCoverProps {
   src?: string;
   alt: string;
   className?: string;
   eager?: boolean;
+  sizes?: string;
 }
 
 const IMAGE_RE = /\.(png|jpe?g|webp|avif)$/i;
 
-export default function BookCover({ src, alt, className = "", eager = false }: BookCoverProps) {
+const DEFAULT_SIZES =
+  "(min-width: 1280px) 260px, (min-width: 1024px) 300px, (min-width: 640px) 300px, 45vw";
+
+export default function BookCover({
+  src,
+  alt,
+  className = "",
+  eager = false,
+  sizes = DEFAULT_SIZES,
+}: BookCoverProps) {
   const [loaded, setLoaded] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const valid = src && IMAGE_RE.test(src);
+
+  useEffect(() => {
+    if (rootRef.current?.querySelector("img")?.complete) setLoaded(true);
+  }, []);
 
   if (!valid) {
     return (
@@ -25,17 +41,18 @@ export default function BookCover({ src, alt, className = "", eager = false }: B
   }
 
   return (
-    <div className={`${className} relative bg-surface-alt overflow-hidden`}>
+    <div ref={rootRef} className={`relative overflow-hidden bg-surface-alt ${className}`}>
       {!loaded && <div className="skeleton absolute inset-0" />}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src={src}
         alt={alt}
-        loading={eager ? "eager" : "lazy"}
-        decoding="async"
-        draggable={false}
+        fill
+        sizes={sizes}
+        priority={eager}
+        quality={80}
         onLoad={() => setLoaded(true)}
-        className={`absolute inset-0 w-full h-full object-cover ${loaded ? "media-loaded" : "media-loading"}`}
+        draggable={false}
+        className={`object-cover ${loaded ? "media-loaded" : "media-loading"}`}
       />
     </div>
   );

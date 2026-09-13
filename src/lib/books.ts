@@ -7,7 +7,7 @@ export const sampleBooks: Book[] = [
     author: "فدوى يونس",
     price: 35,
     condition: "like-new",
-    coverImage: "/books/book1.png",
+    coverImage: "/books/the_feminineFloklorSongs.png",
     description:
       "قطعة من ذاكرتنا وتراثنا بين يديك! كتاب \"من الأغاني النسائية الشعبية وقول الست بدرية\" (جمع وشرح وتحليل: فدوى يونس، مراجعة د. شكري عراف). توثيق رائع للأغاني الشعبية النسائية والأمثال التي شكلت جزءاً من هويتنا وذاكرتنا الشفهية. الكتاب ليس مجرد قراءة، بل مرجع تراثي قيّم لكل مهتم بالأدب الشعبي والتاريخ المحلي.",
   },
@@ -17,7 +17,7 @@ export const sampleBooks: Book[] = [
     author: "أدب عالمي",
     price: 20,
     condition: "like-new",
-    coverImage: "/books/book2.png",
+    coverImage: "/books/choosenFromTheBestWorldStorys.png",
     description:
       "رحلة بين أشهر القصص العالمية في كتاب واحد! إذا كنت تحب التنقل بين حكايات مختلفة وثقافات متعددة، كتاب \"مختارات من روائع القصص العالمية\" يأخذك بجولة بين أبدع ما كتب الأدب العالمي بأسلوب ممتع ومشوق.",
   },
@@ -27,7 +27,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book3.jpeg",
+    coverImage: "/books/binbatttota.jpeg",
     description:
       "من سلسلة الناجحون: قصة مبسطة ومشوقة عن ابن بطوطة، رحالة العرب الذي جاب العالم وجمع الحكايات في رحلة خالدة.",
   },
@@ -37,7 +37,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book4.jpeg",
+    coverImage: "/books/Davinci.jpeg",
     description:
       "من سلسلة الناجحون: سيرة مبسطة للفنان والعالم ليوناردو دي فنشي، الرسام الخالد صاحب العبقرية المتعددة المواهب.",
   },
@@ -47,7 +47,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book5.jpeg",
+    coverImage: "/books/abdrahmanDakhel.jpeg",
     description:
       "من سلسلة الناجحون: حكاية عبد الرحمن الداخل، صقر قريش، ومغامرته العظيمة لتأسيس دولة الأندلس.",
   },
@@ -57,7 +57,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book6.jpeg",
+    coverImage: "/books/madam_couri.jpeg",
     description:
       "من سلسلة الناجحون: سيرة ملهِمة لمدام كوري، أول عالمة تكسب جائزة نوبل مرتين، مكتشفة الراديوم.",
   },
@@ -67,7 +67,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book7.jpeg",
+    coverImage: "/books/shajratDur.jpeg",
     description:
       "من سلسلة الناجحون: قصة شجرة الدُر، أول امرأة تولّت حكم المسلمين، ودورها البطولي في درء الخطر عن مصر.",
   },
@@ -77,7 +77,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book8.jpeg",
+    coverImage: "/books/bastor.jpeg",
     description:
       "من سلسلة الناجحون: سيرة العالم لويس باستور، عدو الجراثيم، الذي اكتشف اللقاحات وأنقذ ملايين الأرواح.",
   },
@@ -87,7 +87,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book9.jpeg",
+    coverImage: "/books/alexender.jpeg",
     description:
       "من سلسلة الناجحون: قصة الإسكندر الأكبر، فاتح العالم القديم، وحملاته التي غيّرت خريطة التاريخ.",
   },
@@ -97,7 +97,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book10.jpeg",
+    coverImage: "/books/napoleon.jpeg",
     description:
       "من سلسلة الناجحون: سيرة نابليون بونابرت، القائد الذي بلغ بجيوشه أطراف أوروبا وترك بصمة خالدة في العالم.",
   },
@@ -107,7 +107,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book11.jpeg",
+    coverImage: "/books/khaledBinAlwaleed.jpeg",
     description:
       "من سلسلة الناجحون: قصة سيف الله المسلول خالد بن الوليد، القائد الذي لم يُهزم في معركة، بطل اليرموك.",
   },
@@ -117,7 +117,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book12.jpeg",
+    coverImage: "/books/hanebaal.jpeg",
     description:
       "من سلسلة الناجحون: حكاية هنيبعل، القائد القرطاجي الأسطوري الذي عبر الجبال بالفيلة وتحدى روما العظمى.",
   },
@@ -127,7 +127,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book13.jpeg",
+    coverImage: "/books/gandi.jpeg",
     description:
       "من سلسلة الناجحون: سيرة غاندي، أبو الهند، ورسالته في المقاومة السلمية التي حررت الملايين.",
   },
@@ -137,7 +137,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book14.jpeg",
+    coverImage: "/books/bethoven.jpeg",
     description:
       "من سلسلة الناجحون: قصة الموسيقار بتهوفن، أبو السيمفونيات، الذي أبدع أرقى الموسيقى رغم صممه.",
   },
@@ -147,7 +147,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book15.jpeg",
+    coverImage: "/books/adeson.jpeg",
     description:
       "من سلسلة الناجحون: سيرة المخترع توماس إديسون، الذي أضاء العالم باختراعاته وإصراره الخارق.",
   },
@@ -157,7 +157,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book16.jpeg",
+    coverImage: "/books/zanoubia.jpeg",
     description:
       "من سلسلة الناجحون: قصة الملكة زنوبيا، ملكة تدمر، التي قادت مملكتها وقالت كلمتها في مواجهة الامبراطوريات.",
   },
@@ -167,7 +167,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book17.jpeg",
+    coverImage: "/books/colombus.jpeg",
     description:
       "من سلسلة الناجحون: سيرة الرحالة كريستوفر كولومبوس، مكتشف أميركا، الذي عبر المحيط بحثاً عن عالم جديد.",
   },
@@ -177,7 +177,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book18.jpeg",
+    coverImage: "/books/salahDin.jpeg",
     description:
       "من سلسلة الناجحون: قصة القائد صلاح الدين الأيوبي، بطل حطين، ومحرر القدس بروحه العادلة النبيلة.",
   },
@@ -187,7 +187,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book19.jpeg",
+    coverImage: "/books/shekcpere.jpeg",
     description:
       "من سلسلة الناجحون: سيرة وليم شكسبير، شاعر الإنسانية، صاحب أعظم المسرحيات في تاريخ الأدب العالمي.",
   },
@@ -197,7 +197,7 @@ export const sampleBooks: Book[] = [
     author: "سلسلة الناجحون",
     price: 15,
     condition: "like-new",
-    coverImage: "/books/book20.jpeg",
+    coverImage: "/books/tareqBinZiad.jpeg",
     description:
       "من سلسلة الناجحون: قصة القائد طارق بن زياد، فاتح الأندلس، وحكاية الجبل الذي حمل اسمه في التاريخ.",
   },
@@ -207,7 +207,7 @@ export const sampleBooks: Book[] = [
     author: "ترجمة: د. ميشال عاصي",
     price: 30,
     condition: "good",
-    coverImage: "/books/book21.jpeg",
+    coverImage: "/books/lingusticStudyisInmarxisim.jpeg",
     description:
       "مدخل فكري ولساني يحلل نشأة اللغة وتطورها من منظور فلسفي واجتماعي، نسخة قيّمة ونادرة للباحثين والمهتمين باللغويات. حالة النسخة: جيدة جداً (طبعة دار النضال).",
   },
@@ -217,7 +217,7 @@ export const sampleBooks: Book[] = [
     author: "مجموعة أنا أقرأ",
     price: 10,
     condition: "like-new",
-    coverImage: "/books/book22.jpeg",
+    coverImage: "/books/alkakahAlhariba.jpeg",
     description:
       "من مجموعة \"أنا أقرأ\" للأطفال: قصة ممتعة ومصممة لتنمية مهارة القراءة والمطالعة عند الأطفال بغلاف مقوى وجودة عالية. حالة النسخة: ممتازة جداً.",
   },
@@ -227,7 +227,7 @@ export const sampleBooks: Book[] = [
     author: "مجموعة أنا أقرأ",
     price: 10,
     condition: "like-new",
-    coverImage: "/books/book23.jpeg",
+    coverImage: "/books/sirAlammera.jpeg",
     description:
       "من مجموعة \"أنا أقرأ\" للأطفال: قصة ممتعة ومصممة لتنمية مهارة القراءة والمطالعة عند الأطفال بغلاف مقوى وجودة عالية. حالة النسخة: ممتازة جداً.",
   },
@@ -237,7 +237,7 @@ export const sampleBooks: Book[] = [
     author: "أمير الشعراء أحمد شوقي",
     price: 20,
     condition: "good",
-    coverImage: "/books/book24.jpeg",
+    coverImage: "/books/majnonLayla.jpeg",
     description:
       "دراما شعرية خالدة تجسد قصة الحب العذري الشهيرة بين قيس وليلى بلغة شعرية رصينة وأسلوب مسرحي ساحر. حالة النسخة: جيدة جداً.",
   },
@@ -247,7 +247,7 @@ export const sampleBooks: Book[] = [
     author: "عميد الأدب العربي طه حسين",
     price: 25,
     condition: "good",
-    coverImage: "/books/book25.jpeg",
+    coverImage: "/books/alayyam2.jpeg",
     description:
       "رحلة سيرة ذاتية ملهمة ومحطة فارقة في الأدب العربي الحديث، يستكمل فيها طه حسين أفراح وأحزان رحلته للأزهر بالقاهرة. حالة النسخة: جيدة جداً (طبعة دار المعارف الكلاسيكية الأنيقة).",
   },
@@ -257,7 +257,7 @@ export const sampleBooks: Book[] = [
     author: "د. عطا الله سعيد قبطي",
     price: 30,
     condition: "like-new",
-    coverImage: "/books/book26.jpeg",
+    coverImage: "/books/nothomAlhokomInislamcontreysinmidages.jpeg",
     description:
       "مرجع أكاديمي وتاريخي شامل يفكك آليات الحكم والإدارة والمجتمع الإسلامي في العصور الوسطى بأسلوب علمي دقيق، ممتاز جداً لطلاب التاريخ والباحثين. حالة النسخة: ممتازة جداً (مغلفة بطبقة حماية من النايلون للحفاظ عليها).",
   },
@@ -267,7 +267,7 @@ export const sampleBooks: Book[] = [
     author: "سناء المصري",
     price: 25,
     condition: "like-new",
-    coverImage: "/books/book27.jpeg",
+    coverImage: "/books/aljamiatalgherHokomia.jpeg",
     description:
       "كتاب سياسي واجتماعي نقدي، جريء ونادر من إصدارات التسعينيات. يتناول الكتاب دراسة عميقة لقضية التمويل الأجنبي ودور المنظمات غير الحكومية، وكيف يتداخل المال الدولي مع الأجندات السياسية ومفهوم التطبيع، بأسلوب تحليلي يكشف كواليس العمل الأهلي والتنموي. حالة النسخة: ممتازة ونظيفة جداً.",
   },
@@ -277,7 +277,7 @@ export const sampleBooks: Book[] = [
     author: "Oxford Bookworms Library",
     price: 20,
     condition: "like-new",
-    coverImage: "/books/book28.jpeg",
+    coverImage: "/books/alice.jpeg",
     description:
       "من سلسلة Oxford Bookworms Library الشهيرة: رواية عالمية مشوقة لتنمية اللغة الإنجليزية وزيادة الحصيلة اللغوية. حالة الكتاب: نظيفة جداً وممتازة (شبه جديدة).",
   },
@@ -287,7 +287,7 @@ export const sampleBooks: Book[] = [
     author: "Oxford Bookworms Library",
     price: 20,
     condition: "like-new",
-    coverImage: "/books/book29.jpeg",
+    coverImage: "/books/alittilePrincess.jpeg",
     description:
       "من سلسلة Oxford Bookworms Library الشهيرة: رواية عالمية مشوقة لتنمية اللغة الإنجليزية وزيادة الحصيلة اللغوية. حالة الكتاب: نظيفة جداً وممتازة (شبه جديدة).",
   },
@@ -297,7 +297,7 @@ export const sampleBooks: Book[] = [
     author: "Oxford Bookworms Library",
     price: 20,
     condition: "like-new",
-    coverImage: "/books/book30.jpeg",
+    coverImage: "/books/nedkelly.jpeg",
     description:
       "من سلسلة Oxford Bookworms Library الشهيرة: قصة حقيقية مشوقة لتنمية اللغة الإنجليزية وزيادة الحصيلة اللغوية. حالة الكتاب: نظيفة جداً وممتازة (شبه جديدة).",
   },
@@ -307,7 +307,7 @@ export const sampleBooks: Book[] = [
     author: "Oxford Bookworms Library",
     price: 20,
     condition: "like-new",
-    coverImage: "/books/book31.jpeg",
+    coverImage: "/books/goldfish.jpeg",
     description:
       "من سلسلة Oxford Bookworms Library الشهيرة: رواية عالمية مشوقة لتنمية اللغة الإنجليزية وزيادة الحصيلة اللغوية. حالة الكتاب: نظيفة جداً وممتازة (شبه جديدة).",
   },
@@ -317,7 +317,7 @@ export const sampleBooks: Book[] = [
     author: "Oxford Bookworms Library",
     price: 20,
     condition: "like-new",
-    coverImage: "/books/book32.jpeg",
+    coverImage: "/books/kidnapped.jpeg",
     description:
       "من سلسلة Oxford Bookworms Library الشهيرة: رواية عالمية مشوقة لتنمية اللغة الإنجليزية وزيادة الحصيلة اللغوية. حالة الكتاب: نظيفة جداً وممتازة (شبه جديدة).",
   },
@@ -327,7 +327,7 @@ export const sampleBooks: Book[] = [
     author: "Oxford Bookworms Library",
     price: 20,
     condition: "like-new",
-    coverImage: "/books/book33.jpeg",
+    coverImage: "/books/returnToEarth.jpeg",
     description:
       "من سلسلة Oxford Bookworms Library الشهيرة: رواية خيال علمي مشوقة لتنمية اللغة الإنجليزية وزيادة الحصيلة اللغوية. حالة الكتاب: نظيفة جداً وممتازة (شبه جديدة).",
   },
@@ -337,7 +337,7 @@ export const sampleBooks: Book[] = [
     author: "Oxford Bookworms Library",
     price: 20,
     condition: "like-new",
-    coverImage: "/books/book34.jpeg",
+    coverImage: "/books/adubliusLegacy.jpeg",
     description:
       "من سلسلة Oxford Bookworms Library الشهيرة: رواية عالمية مشوقة لتنمية اللغة الإنجليزية وزيادة الحصيلة اللغوية. حالة الكتاب: نظيفة جداً وممتازة (شبه جديدة).",
   },
@@ -347,7 +347,7 @@ export const sampleBooks: Book[] = [
     author: "Oxford Bookworms Library",
     price: 20,
     condition: "like-new",
-    coverImage: "/books/book35.jpeg",
+    coverImage: "/books/lornaDoone.jpeg",
     description:
       "من سلسلة Oxford Bookworms Library الشهيرة: كلاسيكية مشوقة لتنمية اللغة الإنجليزية وزيادة الحصيلة اللغوية. حالة الكتاب: نظيفة جداً وممتازة (شبه جديدة).",
   },

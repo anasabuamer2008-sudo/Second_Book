@@ -1,6 +1,7 @@
 "use client";
 import { Book, useCartStore } from "@/store/useCartStore";
 import { useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 interface BookModalProps {
@@ -165,18 +166,29 @@ export default function BookModal({ book, onClose, lang, dict, onToast }: BookMo
               <div ref={sceneRef} className="book-modal-scene">
                 <div className="book-modal-spine">
                   {hasImage && (
-                    <div
-                      className="w-full h-full bg-cover bg-center"
-                      style={{ backgroundImage: `url(${book.coverImage})`, filter: "brightness(0.6)" }}
-                    />
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={book.coverImage}
+                        alt=""
+                        fill
+                        sizes="22px"
+                        className="object-cover"
+                        style={{ filter: "brightness(0.6)" }}
+                      />
+                    </div>
                   )}
                 </div>
                 <div className="book-modal-cover">
                   {hasImage ? (
-                    <div
-                      className="w-full h-full bg-cover bg-center rounded-r-xl"
-                      style={{ backgroundImage: `url(${book.coverImage})` }}
-                    />
+                    <div className="relative w-full h-full rounded-r-xl">
+                      <Image
+                        src={book.coverImage}
+                        alt={book.title}
+                        fill
+                        sizes="220px"
+                        className="object-cover"
+                      />
+                    </div>
                   ) : (
                     <div className="w-full h-full flex flex-col items-center justify-center gap-3 rounded-r-xl bg-gradient-to-br from-primary to-primary-dark text-white p-4">
                       <svg className="w-12 h-12 opacity-70" fill="currentColor" viewBox="0 0 24 24">

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "@/components/ui/ThemeToggle";
@@ -78,8 +79,7 @@ export default function Navbar({ lang, dict }: NavbarProps) {
               href={`/${lang}`}
               className="group flex items-center gap-3 rounded-xl focus-visible:outline-primary"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/logo.jpg"
                 alt="Second Book Logo"
                 width={44}
@@ -157,18 +157,18 @@ export default function Navbar({ lang, dict }: NavbarProps) {
                   key={link.href}
                   href={link.href}
                   aria-current={isActive ? "page" : undefined}
-className={`relative flex flex-col items-center justify-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-colors ${
+                  className={`relative flex flex-col items-center justify-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-semibold transition-colors ${
                     isActive ? "text-primary" : "text-text-secondary"
                   }`}
                 >
                   <NavIcon name={link.icon} active={isActive} />
-                    {link.icon === "wishlist" && wishlistCount > 0 && (
-                      <span className="absolute -top-1 left-1/2 -translate-x-1/2 min-w-4 h-4 px-1 bg-danger text-white text-[10px] font-extrabold rounded-full flex items-center justify-center ring-2 ring-background">
-                        {wishlistCount}
-                      </span>
-                    )}
-                    <span>{link.label}</span>
-                  </Link>
+                  {link.icon === "wishlist" && wishlistCount > 0 && (
+                    <span className="absolute -top-1 left-1/2 -translate-x-1/2 min-w-4 h-4 px-1 bg-danger text-white text-[10px] font-extrabold rounded-full flex items-center justify-center ring-2 ring-background">
+                      {wishlistCount}
+                    </span>
+                  )}
+                  <span>{link.label}</span>
+                </Link>
               );
             })}
           </div>

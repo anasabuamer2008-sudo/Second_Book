@@ -3,6 +3,7 @@ import { SITE_URL, SITE_NAME, BRAND_NAME } from "@/lib/config";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import PrivacyBanner from "@/components/layout/PrivacyBanner";
+import BackToTop from "@/components/layout/BackToTop";
 import {
   Amiri,
   Cairo,
@@ -19,21 +20,21 @@ const amiri = Amiri({
 
 const frankRuhl = Frank_Ruhl_Libre({
   subsets: ["hebrew", "latin"],
-  weight: ["400", "500", "700"],
+  weight: ["400", "700"],
   variable: "--font-display-he",
   display: "swap",
 });
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
-  weight: ["400", "600", "700", "800"],
+  weight: ["400", "700", "800"],
   variable: "--font-sans-ar",
   display: "swap",
 });
 
 const heebo = Heebo({
   subsets: ["hebrew", "latin"],
-  weight: ["400", "500", "700", "800"],
+  weight: ["400", "700", "800"],
   variable: "--font-sans-he",
   display: "swap",
 });
@@ -90,7 +91,10 @@ export default async function LangLayout({
   const { lang } = await params;
   const typedLang = lang === "he" ? "he" : "ar";
   const dict = getDictionary(typedLang);
-  const fonts = `${cairo.variable} ${heebo.variable} ${amiri.variable} ${frankRuhl.variable}`;
+  const fonts =
+    typedLang === "ar"
+      ? `${cairo.variable} ${amiri.variable}`
+      : `${heebo.variable} ${frankRuhl.variable}`;
 
   const themeInit = `(function(){try{var t=localStorage.getItem("secondbook-theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})();`;
 
@@ -114,6 +118,7 @@ export default async function LangLayout({
         </main>
         <Footer lang={typedLang} dict={dict} />
         <PrivacyBanner dict={dict.privacyBanner} lang={typedLang} />
+        <BackToTop label={typedLang === "ar" ? "العودة للأعلى" : "חזרה לראש הדף"} />
       </body>
     </html>
   );
