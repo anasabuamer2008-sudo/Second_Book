@@ -3,47 +3,45 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* =====================================================
-   SECOND BOOK — Modern Professional Design System
-   Warm paper palette · Dark mode · WCAG-aware tokens
+   SECOND BOOK — Retro Print Shop Design System
+   70s sunset & aged paper · sticker shadows · grain
    ===================================================== */
 
 :root {
-  --background: #faf8f4;
-  --foreground: #221d18;
-  --primary: #a15a1f;
-  --primary-light: #b96e2e;
-  --primary-dark: #7f4415;
-  --accent: #d97706;
-  --accent-dark: #b45309;
-  --surface: #ffffff;
-  --surface-alt: #f3efe8;
-  --border: #e5dfd4;
-  --text-secondary: #6f6a62;
-  --success: #15803d;
-  --danger: #dc2626;
-  --ring: rgba(161, 90, 31, 0.4);
-  --shadow-sm: 0 1px 2px rgba(34, 29, 24, 0.06);
-  --shadow-md: 0 6px 20px -8px rgba(34, 29, 24, 0.16);
-  --shadow-lg: 0 20px 45px -18px rgba(34, 29, 24, 0.22);
+  --background: #f3e6c8;
+  --foreground: #38260f;
+  --primary: #bf4e24;
+  --primary-light: #d46e41;
+  --primary-dark: #91311a;
+  --accent: #e0a63c;
+  --accent-dark: #b4761a;
+  --surface: #fdf4da;
+  --surface-alt: #ecdcbb;
+  --border: #d8c7a3;
+  --text-secondary: #7c6a54;
+  --success: #4c7a34;
+  --danger: #c22f1e;
+  --ring: rgba(191, 78, 36, 0.35);
+  --shadow-hard: 0 3px 0 0 #d9c194;
+  --shadow-hard-lg: 0 4px 0 0 #d1b783;
   color-scheme: light;
 }
 
 .dark {
-  --background: #16130e;
-  --foreground: #ede7de;
-  --primary: #d97a2e;
-  --primary-light: #e29048;
-  --primary-dark: #b45309;
-  --accent: #f59e0b;
-  --accent-dark: #fbbf24;
-  --surface: #211c15;
-  --surface-alt: #2b251d;
-  --border: #393229;
-  --text-secondary: #a69f93;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0 8px 24px -10px rgba(0, 0, 0, 0.55);
-  --shadow-lg: 0 24px 55px -20px rgba(0, 0, 0, 0.65);
-  --ring: rgba(217, 122, 46, 0.45);
+  --background: #1d130b;
+  --foreground: #f4e6c8;
+  --primary: #ff7a3d;
+  --primary-light: #ff9a66;
+  --primary-dark: #e05c1f;
+  --accent: #ffc93f;
+  --accent-dark: #ffd97a;
+  --surface: #271a0e;
+  --surface-alt: #332417;
+  --border: #4a3520;
+  --text-secondary: #b8a57f;
+  --shadow-hard: 0 3px 0 0 #3a2b16;
+  --shadow-hard-lg: 0 4px 0 0 #46341c;
+  --ring: rgba(255, 122, 61, 0.4);
   color-scheme: dark;
 }
 
@@ -62,18 +60,18 @@
   --color-text-secondary: var(--text-secondary);
   --color-success: var(--success);
   --color-danger: var(--danger);
+  --shadow-sm: var(--shadow-hard);
+  --shadow-md: var(--shadow-hard);
+  --shadow-lg: var(--shadow-hard-lg);
+  --shadow-xl: var(--shadow-hard-lg);
+  --shadow-2xl: var(--shadow-hard);
 }
 
-/* =====================================================
-   Base
-   ===================================================== */
-
-html {
-  scroll-behavior: smooth;
-}
-
+/* Retro grain overlay — aged-paper texture */
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  background-blend-mode: overlay;
   color: var(--foreground);
   font-family: var(--font-sans-ar, var(--font-sans-he)), "Segoe UI", Tahoma, sans-serif;
   font-size: 16px;
@@ -84,9 +82,17 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* =====================================================
+   Base
+   ===================================================== */
+
+html {
+  scroll-behavior: smooth;
+}
+
 ::selection {
   background: var(--accent);
-  color: #fff;
+  color: var(--surface);
 }
 
 * {
@@ -190,7 +196,7 @@ button {
   100% { background-position: 400px 0; }
 }
 .skeleton {
-  background: linear-gradient(90deg, var(--surface-alt) 25%, color-mix(in srgb, var(--surface-alt) 60%, #fff 40%) 50%, var(--surface-alt) 75%);
+  background: linear-gradient(90deg, var(--surface-alt) 25%, color-mix(in srgb, var(--surface-alt) 60%, var(--surface) 40%) 50%, var(--surface-alt) 75%);
   background-size: 800px 100%;
   animation: shimmer 1.4s linear infinite;
 }
@@ -217,11 +223,11 @@ button {
    Card lift
    ===================================================== */
 .lift {
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 .lift:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hard-lg), 0 0 0 2px color-mix(in srgb, var(--primary) 18%, transparent);
 }
 
 /* =====================================================
@@ -268,7 +274,12 @@ button {
   width: 22px;
   transform: rotateY(-90deg);
   transform-origin: 0% 50%;
-  background: linear-gradient(180deg, #2b1a0e, #120b05 60%, #241409);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--primary-dark) 88%, #000 12%),
+    color-mix(in srgb, var(--primary-dark) 55%, #000 45%) 60%,
+    color-mix(in srgb, var(--primary-dark) 92%, #000 8%)
+  );
   border-radius: 3px 0 0 3px;
   box-shadow: inset -3px 0 6px rgba(0, 0, 0, 0.5);
   overflow: hidden;
@@ -280,7 +291,11 @@ button {
   bottom: 6px;
   right: 0;
   width: 0;
-  background: repeating-linear-gradient(to bottom, #f4ead0 0 2px, #d9c89c 2px 4px);
+  background: repeating-linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--surface) 92%, var(--accent) 8%) 0 2px,
+    color-mix(in srgb, var(--surface) 78%, var(--accent) 22%) 2px 4px
+  );
   border-radius: 0 3px 3px 0;
   transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
   box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.12);
@@ -354,7 +369,7 @@ button {
    ===================================================== */
 
 .text-gradient-gold {
-  background: linear-gradient(115deg, #ffe3a1 0%, #ffb84d 30%, #fff6d8 50%, #f59e0b 72%, #ffd789 100%);
+  background: linear-gradient(115deg, #ffd482 0%, #ff9845 30%, #fff3c4 50%, #e8a03a 72%, #ffcb6b 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;

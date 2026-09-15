@@ -107,8 +107,8 @@ export default async function LangLayout({
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: themeInit }}
         />
-        <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#16130e" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#f3e6c8" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#1d130b" media="(prefers-color-scheme: dark)" />
       </head>
       <body className="min-h-full flex flex-col">
         <a
