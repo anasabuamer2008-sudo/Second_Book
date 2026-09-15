@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { getDictionary } from "@/dictionaries";
 import { SITE_URL, SITE_NAME, BRAND_NAME } from "@/lib/config";
 import Navbar from "@/components/layout/Navbar";
@@ -101,7 +102,11 @@ export default async function LangLayout({
   return (
     <html lang={typedLang} dir="rtl" suppressHydrationWarning className={`${fonts} h-full`}>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeInit }}
+        />
         <meta name="theme-color" content="#faf8f4" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#16130e" media="(prefers-color-scheme: dark)" />
       </head>
